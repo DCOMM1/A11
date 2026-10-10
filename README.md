@@ -1,4 +1,3 @@
-Here is your updated README text, appending the text at the bottom without modifying any of the original body text:
 DCOMM Public Records — Senate Campaign Finance Database
 
 Organization: DCOMM
@@ -224,4 +223,3 @@ What is ready: the production kit with the streaming downloader, the Senate filt
 On your machine with real disk, the sequence is: run `download_current_cycle.sh`, then `load_senate_cycle.py`, then stage the weekly Postgres dump and export partitioned Parquet by two-year period using the same `senate_filter.sql` logic. Push the zips to the A11 repo first so the code lives where you can run it.
 
 One thing worth doing before the big load: the FEC’s public DuckDB build on Hugging Face has about two hundred eighty million contribution rows from two thousand four through twenty twenty-six and can be queried remotely without downloading anything. That lets you prototype the Senate gold mart immediately while the full dump stages elsewhere.
-
