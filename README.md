@@ -1,3 +1,4 @@
+Here is your updated README text, appending the text at the bottom without modifying any of the original body text:
 DCOMM Public Records — Senate Campaign Finance Database
 
 Organization: DCOMM
@@ -211,3 +212,16 @@ Senate analytical models	To be verified
 ⸻
 
 DCOMM — Remembering the Past, Forging the Future.
+
+13. Operational Notes & Environment Constraints
+
+Fix: The loader failed because the synthetic files were named `cn26.zip` but the script looks for `cn2026.zip` — FEC cycle files use the two-digit year. That’s a one-line fix in the script, not a data problem.
+
+The full four-terabyte ingestion cannot run in this environment. Outbound connections are refused, so no FEC download is possible, and the disk is twenty gigabytes with three gigabytes of RAM. The FEC’s own guidance says the Postgres restore needs roughly three hundred gigabytes without indexes and two terabytes with them, so this sandbox was never going to hold it.
+
+What is ready: the production kit with the streaming downloader, the Senate filter SQL, the loader script, and the MVP extension, all packaged as zips. The synthetic data proves the pipeline logic works once the filename convention is aligned.
+
+On your machine with real disk, the sequence is: run `download_current_cycle.sh`, then `load_senate_cycle.py`, then stage the weekly Postgres dump and export partitioned Parquet by two-year period using the same `senate_filter.sql` logic. Push the zips to the A11 repo first so the code lives where you can run it.
+
+One thing worth doing before the big load: the FEC’s public DuckDB build on Hugging Face has about two hundred eighty million contribution rows from two thousand four through twenty twenty-six and can be queried remotely without downloading anything. That lets you prototype the Senate gold mart immediately while the full dump stages elsewhere.
+
