@@ -1,0 +1,33 @@
+name: Bounded FEC source batch (2 GB)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 8 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      FEC_MAX_BYTES: "2000000000"
+      FEC_OUT_DIR: "fec_batch"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download complete FEC ZIPs within 2 GB budget
+        run: python scripts/fec_bounded_download.py
+      - name: Publish batch and manifest as a temporary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dcomm-fec-batch-2gb
+          path: fec_batch/
+          if-no-files-found: error
+          retention-days: 7
